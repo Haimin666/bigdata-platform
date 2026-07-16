@@ -1,0 +1,36 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: platform-service
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+    show-sql: false
+
+platform:
+  jwt:
+    secret: ${JWT_SECRET:change-me-this-is-a-dev-secret-key-at-least-256-bits-long-please}
+    ttl-minutes: ${JWT_TTL_MINUTES:720}
+  # Linkis 网关地址（内置网关把 /api/linkis/** 转发到这里）
+  linkis:
+    base-url: ${LINKIS_BASE_URL:http://linkis:9001}
+    mock: ${LINKIS_MOCK:false}
+  cors:
+    origins: ${CORS_ORIGINS:http://localhost:3000}
+
+logging:
+  level:
+    com.dataplatform: INFO
+    org.springframework.security: INFO

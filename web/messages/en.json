@@ -1,0 +1,120 @@
+{
+  "common": {
+    "appName": "DataSphere Studio",
+    "username": "Username",
+    "password": "Password",
+    "remember": "Remember me",
+    "login": "Sign in",
+    "loginTitle": "DataSphere Studio Sign in",
+    "loginSuccess": "Signed in successfully",
+    "loginFailed": "Sign in failed",
+    "logout": "Sign out",
+    "confirm": "OK",
+    "cancel": "Cancel",
+    "create": "Create",
+    "search": "Search",
+    "actions": "Actions",
+    "name": "Name",
+    "description": "Description",
+    "loading": "Loading..."
+  },
+  "workspace": {
+    "title": "Workspace",
+    "switch": "Switch workspace",
+    "homeTitle": "Workspace Home",
+    "homeDesc": "Unified data application development & management portal",
+    "projects": "Projects",
+    "appProcess": "App Process",
+    "knowledge": "Knowledge",
+    "noWorkspace": "No workspace"
+  },
+  "project": {
+    "create": "New Project",
+    "list": "Projects",
+    "createTitle": "Create Project",
+    "namePlaceholder": "Enter project name",
+    "descPlaceholder": "Enter project description",
+    "businessLabel": "Business",
+    "productLabel": "Product",
+    "empty": "No projects yet. Click \"New Project\" to start.",
+    "open": "Open",
+    "back": "Back to projects"
+  },
+  "orchestrator": {
+    "title": "Orchestrators",
+    "name": "Name",
+    "version": "Version",
+    "status": "Status",
+    "owner": "Owner",
+    "createTime": "Created",
+    "empty": "No orchestrators",
+    "open": "Open",
+    "canvasTodo": "Workflow canvas arrives in milestone M3"
+  },
+  "nav": {
+    "home": "Workspace",
+    "projects": "Projects",
+    "scriptis": "Scriptis",
+    "workflow": "Workflow",
+    "apps": "Apps",
+    "datasource": "Data Sources",
+    "governance": "Governance"
+  },
+  "scriptis": {
+    "title": "Scriptis IDE",
+    "subtitle": "Online SQL/Python/Shell development & execution",
+    "new": "New",
+    "save": "Save",
+    "run": "Run",
+    "saveSuccess": "Saved",
+    "saveFailed": "Save failed",
+    "runSuccess": "Execution finished",
+    "runFailed": "Execution failed",
+    "running": "Running, submitted to Linkis…",
+    "result": "Result",
+    "log": "Log",
+    "noResult": "Click Run to see results",
+    "noData": "No data returned",
+    "untitled": "untitled",
+    "selectPrompt": "Select or create a script from the left"
+  },
+  "workflow": {
+    "title": "Workflow Canvas",
+    "subtitle": "Drag nodes to build a data pipeline DAG",
+    "save": "Save",
+    "clear": "Clear",
+    "saved": "Saved (demo) · {nodes} nodes / {edges} edges",
+    "cleared": "Canvas cleared"
+  },
+  "apps": {
+    "title": "Application Hub",
+    "subtitle": "Integrated sub-apps (AppConn) of DSS",
+    "enter": "Open",
+    "back": "Back to apps",
+    "recent": "Recent activity",
+    "mockNote": "Demo data only — connect each AppConn sub-app for real data."
+  },
+  "datasource": {
+    "title": "Data Sources",
+    "subtitle": "Connected data sources",
+    "name": "Name",
+    "type": "Type",
+    "host": "Host",
+    "database": "Database",
+    "status": "Status",
+    "owner": "Owner",
+    "connected": "Connected",
+    "offline": "Offline"
+  },
+  "governance": {
+    "title": "Data Assets",
+    "subtitle": "Data governance asset catalog",
+    "name": "Asset",
+    "type": "Type",
+    "database": "Database",
+    "comment": "Comment",
+    "rows": "Rows",
+    "size": "Size",
+    "owner": "Owner"
+  }
+}

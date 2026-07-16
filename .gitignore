@@ -1,0 +1,19 @@
+# env
+.env
+.env.local
+
+# frontend
+web/node_modules/
+web/.next/
+web/.next-cache/
+web/tsconfig.tsbuildinfo
+web/*.log
+
+# backend
+platform-service/target/
+platform-service/*.log
+
+# ide
+.idea/
+.vscode/
+.DS_Store

@@ -1,0 +1,56 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bigdata-platform-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: platform
+      TZ: Asia/Shanghai
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-rootpass}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  platform-service:
+    build: ./platform-service
+    image: bigdata-platform-platform-service:latest
+    container_name: bigdata-platform-platform
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me-in-production-at-least-256-bits-long}
+      LINKIS_MOCK: ${LINKIS_MOCK:-true}
+      LINKIS_BASE_URL: ${LINKIS_BASE_URL:-http://linkis:9001}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+    ports:
+      - "8088:8088"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_PLATFORM_API: ${NEXT_PUBLIC_PLATFORM_API:-http://localhost:8088}
+        NEXT_PUBLIC_USE_PLATFORM: "true"
+    image: bigdata-platform-web:latest
+    container_name: bigdata-platform-web
+    depends_on:
+      - platform-service
+    environment:
+      NEXT_PUBLIC_DEFAULT_LOCALE: zh-CN
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
