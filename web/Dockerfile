@@ -5,7 +5,9 @@ FROM node:22-alpine AS deps
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
-RUN pnpm install --no-frozen-lockfile
+# pnpm store 走 BuildKit 缓存，跨构建复用，不再重复下载
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --no-frozen-lockfile
 
 # ---- builder ----
 FROM node:22-alpine AS builder
@@ -19,7 +21,9 @@ ARG NEXT_PUBLIC_PLATFORM_API=""
 ARG NEXT_PUBLIC_USE_PLATFORM="false"
 ENV NEXT_PUBLIC_PLATFORM_API=$NEXT_PUBLIC_PLATFORM_API
 ENV NEXT_PUBLIC_USE_PLATFORM=$NEXT_PUBLIC_USE_PLATFORM
-RUN pnpm build
+# .next/cache 走 BuildKit 缓存，加速增量构建
+RUN --mount=type=cache,target=/app/.next/cache \
+    pnpm build
 
 # ---- runner ----
 FROM node:22-alpine AS runner
