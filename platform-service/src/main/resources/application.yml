@@ -35,6 +35,12 @@ platform:
   dolphinscheduler:
     base-url: ${DOLPHINSCHEDULER_BASE_URL:}
     token: ${DOLPHINSCHEDULER_TOKEN:}
+  # StreamPark（实时开发，P5）。直连现有实例；API token 走环境变量，留空则实时接口返回 503
+  # P5 仅接入只读端点（dashboard/project/env/cluster/team），不触发 build/deploy/start/cancel
+  streampark:
+    base-url: ${STREAMPARK_BASE_URL:}
+    token: ${STREAMPARK_TOKEN:}
+    team-id: ${STREAMPARK_TEAM_ID:}
   cors:
     origins: ${CORS_ORIGINS:http://localhost:3000}
 

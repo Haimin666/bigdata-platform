@@ -219,3 +219,61 @@ export async function triggerDsWorkflow(projectName: string, processId: number):
 export async function getDsInstances(projectName: string, pageNo = 1, pageSize = 20): Promise<unknown> {
   return get<unknown>(`/scheduler/projects/${encodeURIComponent(projectName)}/instances?pageNo=${pageNo}&pageSize=${pageSize}`);
 }
+
+/* --------------------------- 实时开发（P5，StreamPark，只读） --------------------------- */
+
+export interface SpTaskStats {
+  total: number;
+  created: number;
+  scheduled: number;
+  deploying: number;
+  running: number;
+  finished: number;
+  canceling: number;
+  canceled: number;
+  failed: number;
+  reconciling: number;
+}
+
+export interface SpDashboard {
+  runningJob: number;
+  totalSlot: number;
+  availableSlot: number;
+  totalTM: number;
+  tmMemory: number;
+  jmMemory: number;
+  task: SpTaskStats;
+}
+
+export interface SpProject {
+  id: string;
+  name: string;
+  url?: string;
+  branches?: string;
+  buildState?: number;
+  type?: number;
+  description?: string;
+  [k: string]: unknown;
+}
+
+export interface SpEnv {
+  id: string;
+  flinkName: string;
+  version: string;
+  scalaVersion: string;
+  isDefault?: boolean;
+  [k: string]: unknown;
+}
+
+export async function getSpDashboard(): Promise<SpDashboard> {
+  return get<SpDashboard>('/streampark/dashboard');
+}
+export async function getSpProjects(): Promise<SpProject[]> {
+  return get<SpProject[]>('/streampark/projects');
+}
+export async function getSpEnvs(): Promise<SpEnv[]> {
+  return get<SpEnv[]>('/streampark/envs');
+}
+export async function getSpClusters(): Promise<unknown> {
+  return get<unknown>('/streampark/clusters');
+}

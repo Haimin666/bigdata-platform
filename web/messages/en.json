@@ -60,7 +60,8 @@
     "datasource": "Data Sources",
     "governance": "Governance",
     "lineage": "Lineage",
-    "scheduler": "Scheduler"
+    "scheduler": "Scheduler",
+    "streampark": "Realtime"
   },
   "scriptis": {
     "title": "Scriptis IDE",
@@ -151,5 +152,31 @@
     "colRunTime": "Duration",
     "colExecutor": "Executor",
     "colStartTime": "Start Time"
+  },
+  "streampark": {
+    "title": "Realtime Overview",
+    "subtitle": "Powered by StreamPark. View Flink cluster metrics, environments and projects (read-only).",
+    "loading": "Loading\u2026",
+    "runningJob": "Running Jobs",
+    "jobsSub": "running jobs",
+    "slots": "Slots",
+    "slotsSub": "available / total",
+    "taskTm": "TaskManagers",
+    "taskTmSub": "instances",
+    "memory": "TM Memory",
+    "jm": "JM Memory",
+    "taskDist": "Task State Distribution",
+    "totalTasks": "Total Tasks",
+    "task_running": "Running",
+    "task_failed": "Failed",
+    "task_canceled": "Canceled",
+    "task_finished": "Finished",
+    "task_scheduled": "Scheduled",
+    "task_deploying": "Deploying",
+    "envs": "Flink Environments",
+    "noEnvs": "No environments",
+    "projects": "Projects",
+    "noProjects": "No projects",
+    "readOnly": "Read-only view \u00b7 no build / deploy / start / cancel"
   }
 }

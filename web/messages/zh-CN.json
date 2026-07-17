@@ -60,7 +60,8 @@
     "datasource": "数据源",
     "governance": "数据治理",
     "lineage": "数据血缘",
-    "scheduler": "离线调度"
+    "scheduler": "离线调度",
+    "streampark": "实时开发"
   },
   "scriptis": {
     "title": "Scriptis IDE",
@@ -151,5 +152,31 @@
     "colRunTime": "运行时长",
     "colExecutor": "执行人",
     "colStartTime": "开始时间"
+  },
+  "streampark": {
+    "title": "实时开发总览",
+    "subtitle": "基于 StreamPark，查看 Flink 实时集群运行指标、环境与项目（只读）",
+    "loading": "加载中…",
+    "runningJob": "运行中作业",
+    "jobsSub": "running jobs",
+    "slots": "Slot",
+    "slotsSub": "可用 / 总计",
+    "taskTm": "TaskManager",
+    "taskTmSub": "实例数",
+    "memory": "TM 内存",
+    "jm": "JM 内存",
+    "taskDist": "Task 状态分布",
+    "totalTasks": "总 Task",
+    "task_running": "运行中",
+    "task_failed": "失败",
+    "task_canceled": "已取消",
+    "task_finished": "完成",
+    "task_scheduled": "已调度",
+    "task_deploying": "部署中",
+    "envs": "Flink 环境",
+    "noEnvs": "暂无环境",
+    "projects": "项目",
+    "noProjects": "暂无项目",
+    "readOnly": "只读视图 · 不触发 build / deploy / start / cancel"
   }
 }

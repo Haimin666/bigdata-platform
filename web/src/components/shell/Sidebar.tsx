@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
-import { Home, FolderKanban, FileCode2, Workflow, LayoutGrid, Database, ShieldCheck, GitBranch, CalendarClock } from 'lucide-react';
+import { Home, FolderKanban, FileCode2, Workflow, LayoutGrid, Database, ShieldCheck, GitBranch, CalendarClock, Radio } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 interface NavItem {
@@ -26,6 +26,7 @@ export function Sidebar() {
     { href: '/governance', icon: ShieldCheck, label: t('governance') },
     { href: '/lineage', icon: GitBranch, label: t('lineage') },
     { href: '/scheduler', icon: CalendarClock, label: t('scheduler') },
+    { href: '/streampark', icon: Radio, label: t('streampark') },
   ];
 
   const isActive = (item: NavItem) =>
