@@ -158,6 +158,38 @@ public class OpenMetadataClient {
     return out;
   }
 
+  /** 按 FQN 取表详情：列、描述、owner、所属库。 */
+  public Map<String, Object> tableDetail(String fqn) {
+    requireConfigured();
+    String resp = get("/api/v1/tables/name/" + enc(fqn) + "?fields=columns,owners,tags");
+    Map<String, Object> out = new LinkedHashMap<>();
+    try {
+      JsonNode t = mapper.readTree(resp);
+      out.put("name", t.path("name").asText(""));
+      out.put("displayName", t.path("displayName").asText(""));
+      out.put("fqn", t.path("fullyQualifiedName").asText(fqn));
+      out.put("entityType", "table");
+      out.put("description", t.path("description").asText(""));
+      out.put("database", t.path("database").path("fullyQualifiedName").asText(""));
+      out.put("owner", t.path("owners").path(0).path("displayName").asText(t.path("owners").path(0).path("name").asText("")));
+      out.put("updatedAt", t.path("updatedAt").asLong(0));
+      out.put("updatedBy", t.path("updatedBy").asText(""));
+      List<Map<String, Object>> columns = new ArrayList<>();
+      for (JsonNode c : t.path("columns")) {
+        Map<String, Object> col = new LinkedHashMap<>();
+        col.put("name", c.path("name").asText(""));
+        col.put("dataType", c.path("dataType").asText(c.path("dataTypeDisplay").asText("")));
+        col.put("description", c.path("description").asText(""));
+        col.put("tags", c.path("tags").findValuesAsText("label"));
+        columns.add(col);
+      }
+      out.put("columns", columns);
+    } catch (Exception e) {
+      log.warn("解析 OpenMetadata tableDetail 响应失败: {}", e.getMessage());
+    }
+    return out;
+  }
+
   private Map<String, Object> toNode(JsonNode n) {
     String label = n.path("displayName").asText("");
     if (label.isBlank()) label = n.path("name").asText("");

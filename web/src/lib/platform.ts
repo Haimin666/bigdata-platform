@@ -136,6 +136,26 @@ export interface LineageGraph {
   fqn: string;
 }
 
+export interface TableColumn {
+  name: string;
+  dataType: string;
+  description: string;
+  tags: string[];
+}
+
+export interface TableDetail {
+  name: string;
+  displayName: string;
+  fqn: string;
+  entityType: string;
+  description: string;
+  database: string;
+  owner: string;
+  updatedAt: number;
+  updatedBy: string;
+  columns: TableColumn[];
+}
+
 export async function getLineageHealth(): Promise<{ connected: boolean; version: string; baseUrl: string }> {
   return get<{ connected: boolean; version: string; baseUrl: string }>('/lineage/health');
 }
@@ -152,4 +172,50 @@ export async function getLineage(
 ): Promise<LineageGraph> {
   const params = new URLSearchParams({ upstreamDepth: String(upstreamDepth), downstreamDepth: String(downstreamDepth) });
   return get<LineageGraph>(`/lineage/${encodeURIComponent(entityType)}/name/${encodeURIComponent(fqn)}?${params}`);
+}
+
+export async function getTableDetail(fqn: string): Promise<TableDetail> {
+  return get<TableDetail>(`/lineage/table/detail/${encodeURIComponent(fqn)}`);
+}
+
+/* --------------------------- 离线调度（P3，DolphinScheduler） --------------------------- */
+
+export interface DsProject {
+  id: number;
+  name: string;
+  description?: string;
+  [k: string]: unknown;
+}
+
+export interface DsWorkflow {
+  id: number;
+  name: string;
+  description?: string;
+  releaseState?: string; // ONLINE / OFFLINE
+  processDefinitionJson?: string;
+  [k: string]: unknown;
+}
+
+export async function getDsProjects(): Promise<DsProject[]> {
+  return get<DsProject[]>('/scheduler/projects');
+}
+
+export async function getDsWorkflows(projectName: string): Promise<DsWorkflow[]> {
+  return get<DsWorkflow[]>(`/scheduler/projects/${encodeURIComponent(projectName)}/workflows`);
+}
+
+export async function getDsWorkflow(projectName: string, processId: number): Promise<DsWorkflow> {
+  return get<DsWorkflow>(`/scheduler/projects/${encodeURIComponent(projectName)}/workflows/${processId}`);
+}
+
+export async function releaseDsWorkflow(projectName: string, processId: number, online: boolean): Promise<unknown> {
+  return post(`/scheduler/projects/${encodeURIComponent(projectName)}/workflows/${processId}/release?online=${online}`);
+}
+
+export async function triggerDsWorkflow(projectName: string, processId: number): Promise<unknown> {
+  return post(`/scheduler/projects/${encodeURIComponent(projectName)}/workflows/${processId}/trigger`);
+}
+
+export async function getDsInstances(projectName: string, pageNo = 1, pageSize = 20): Promise<unknown> {
+  return get<unknown>(`/scheduler/projects/${encodeURIComponent(projectName)}/instances?pageNo=${pageNo}&pageSize=${pageSize}`);
 }

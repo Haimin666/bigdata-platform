@@ -31,6 +31,10 @@ platform:
   openmetadata:
     base-url: ${OPENMETADATA_BASE_URL:}
     token: ${OPENMETADATA_TOKEN:}
+  # DolphinScheduler（离线调度，P3）。直连现有实例；API token 走环境变量，留空则调度接口返回 503
+  dolphinscheduler:
+    base-url: ${DOLPHINSCHEDULER_BASE_URL:}
+    token: ${DOLPHINSCHEDULER_TOKEN:}
   cors:
     origins: ${CORS_ORIGINS:http://localhost:3000}
 

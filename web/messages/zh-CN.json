@@ -59,7 +59,8 @@
     "apps": "应用中心",
     "datasource": "数据源",
     "governance": "数据治理",
-    "lineage": "数据血缘"
+    "lineage": "数据血缘",
+    "scheduler": "离线调度"
   },
   "scriptis": {
     "title": "Scriptis IDE",
@@ -124,6 +125,31 @@
     "searchPlaceholder": "搜索表 / 仪表盘 / 管道 FQN…",
     "empty": "搜索一个实体以查看其血缘图谱",
     "loading": "加载血缘中…",
-    "loaded": "已加载 {fqn} 的血缘"
+    "loaded": "已加载 {fqn} 的血缘",
+    "viewLineage": "查看该节点血缘",
+    "loadingDetail": "加载表详情…"
+  },
+  "scheduler": {
+    "title": "离线调度",
+    "subtitle": "基于 DolphinScheduler，浏览 DS 项目与工作流 DAG，手动触发运行、上下线、查看运行历史",
+    "workflows": "个工作流",
+    "history": "运行历史",
+    "loading": "加载中…",
+    "loadingDetail": "加载表详情…",
+    "trigger": "手动触发",
+    "triggered": "已触发 {name}",
+    "online": "上线",
+    "offline": "下线",
+    "onlined": "已上线",
+    "offlined": "已下线",
+    "selectWorkflow": "选择左侧工作流查看 DAG",
+    "noWorkflows": "该项目下暂无工作流",
+    "noDag": "无法解析 DAG",
+    "noInstances": "暂无运行实例",
+    "colName": "名称",
+    "colState": "状态",
+    "colRunTime": "运行时长",
+    "colExecutor": "执行人",
+    "colStartTime": "开始时间"
   }
 }

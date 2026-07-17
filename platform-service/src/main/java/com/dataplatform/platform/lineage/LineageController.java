@@ -38,6 +38,12 @@ public class LineageController {
     return ApiResponse.ok(client.search(q, size));
   }
 
+  /** 按 FQN 取表详情（列、描述、owner、所属库），供节点抽屉展示。 */
+  @GetMapping("/table/detail/{fqn}")
+  public ApiResponse<Map<String, Object>> tableDetail(@PathVariable String fqn) {
+    return ApiResponse.ok(client.tableDetail(fqn));
+  }
+
   /** 按 FQN 取血缘图（upstream/downstream 深度可调）。 */
   @GetMapping("/{entityType}/name/{fqn}")
   public ApiResponse<Map<String, Object>> lineage(

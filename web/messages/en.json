@@ -59,7 +59,8 @@
     "apps": "Apps",
     "datasource": "Data Sources",
     "governance": "Governance",
-    "lineage": "Lineage"
+    "lineage": "Lineage",
+    "scheduler": "Scheduler"
   },
   "scriptis": {
     "title": "Scriptis IDE",
@@ -124,6 +125,31 @@
     "searchPlaceholder": "Search table / dashboard / pipeline FQN\u2026",
     "empty": "Search an entity to view its lineage graph",
     "loading": "Loading lineage\u2026",
-    "loaded": "Loaded lineage for {fqn}"
+    "loaded": "Loaded lineage for {fqn}",
+    "viewLineage": "View this node lineage",
+    "loadingDetail": "Loading table detail\u2026"
+  },
+  "scheduler": {
+    "title": "Offline Scheduler",
+    "subtitle": "Powered by DolphinScheduler. Browse DS projects & workflow DAGs, trigger runs, toggle online/offline, view run history.",
+    "workflows": "workflows",
+    "history": "Run History",
+    "loading": "Loading\u2026",
+    "loadingDetail": "Loading table detail\u2026",
+    "trigger": "Trigger run",
+    "triggered": "Triggered {name}",
+    "online": "Online",
+    "offline": "Offline",
+    "onlined": "Went online",
+    "offlined": "Went offline",
+    "selectWorkflow": "Select a workflow to view its DAG",
+    "noWorkflows": "No workflows in this project",
+    "noDag": "Unable to parse DAG",
+    "noInstances": "No run instances",
+    "colName": "Name",
+    "colState": "State",
+    "colRunTime": "Duration",
+    "colExecutor": "Executor",
+    "colStartTime": "Start Time"
   }
 }
