@@ -14,6 +14,7 @@ import {
   type Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { Pagination } from '@/components/ui/pagination';
 import {
   getDsInstances,
   getDsProjects,
@@ -23,6 +24,7 @@ import {
   triggerDsWorkflow,
   type DsProject,
   type DsWorkflow,
+  type PageResult,
 } from '@/lib/platform';
 
 /* DS 2.x processDefinitionJson 里的任务 */
@@ -146,13 +148,14 @@ export function SchedulerExplorer() {
   const [loadingDag, setLoadingDag] = useState(false);
   const [busy, setBusy] = useState<number | null>(null);
   const [showHistory, setShowHistory] = useState(false);
-  const [instances, setInstances] = useState<unknown>(null);
+  const [historyPage, setHistoryPage] = useState(1);
+  const [instances, setInstances] = useState<PageResult<Record<string, unknown>> | null>(null);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
   useEffect(() => {
     getDsProjects().then((ps) => {
-      setProjects(ps ?? []);
-      if (ps?.length) setProjectName(ps[0].name);
+      setProjects(ps?.records ?? []);
+      if (ps?.records?.length) setProjectName(ps.records[0].name);
     }).catch((e) => toast.error((e as Error).message));
   }, []);
 
@@ -160,7 +163,7 @@ export function SchedulerExplorer() {
     if (!projectName) return;
     setLoadingList(true);
     setSelected(null);
-    getDsWorkflows(projectName).then((ws) => setWorkflows(ws ?? [])).catch((e) => toast.error((e as Error).message)).finally(() => setLoadingList(false));
+    getDsWorkflows(projectName).then((ws) => setWorkflows(ws?.records ?? [])).catch((e) => toast.error((e as Error).message)).finally(() => setLoadingList(false));
   }, [projectName]);
 
   const openDag = useCallback(async (wf: DsWorkflow) => {
@@ -203,16 +206,26 @@ export function SchedulerExplorer() {
     }
   }, [projectName, selected, t]);
 
-  const loadHistory = useCallback(async () => {
+  const fetchHistory = useCallback(async (page: number) => {
+    setLoadingHistory(true);
+    try {
+      const res = await getDsInstances(projectName, page, 20);
+      setInstances(res);
+      setHistoryPage(res.page || page);
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setLoadingHistory(false);
+    }
+  }, [projectName]);
+
+  const loadHistory = useCallback(() => {
     setShowHistory((v) => {
       const next = !v;
-      if (next) {
-        setLoadingHistory(true);
-        getDsInstances(projectName, 1, 20).then(setInstances).catch((e) => toast.error((e as Error).message)).finally(() => setLoadingHistory(false));
-      }
+      if (next) fetchHistory(1);
       return next;
     });
-  }, [projectName]);
+  }, [fetchHistory]);
 
   const dag = useMemo(() => parseDag(selected?.processDefinitionJson), [selected]);
 
@@ -241,7 +254,7 @@ export function SchedulerExplorer() {
       </div>
 
       {showHistory ? (
-        <InstancesView data={instances} loading={loadingHistory} t={t} />
+        <InstancesView data={instances} loading={loadingHistory} t={t} onPage={fetchHistory} />
       ) : (
         <div className="grid min-h-0 flex-1 grid-cols-[280px_1fr] overflow-hidden rounded-[calc(var(--radius)+4px)] border border-[var(--border)]">
           {/* 工作流列表 */}
@@ -339,8 +352,13 @@ export function SchedulerExplorer() {
   );
 }
 
-function InstancesView({ data, loading, t }: { data: unknown; loading: boolean; t: (k: string) => string }) {
-  const list = (data as { totalList?: Record<string, unknown>[] } | undefined)?.totalList ?? [];
+function InstancesView({ data, loading, t, onPage }: {
+  data: PageResult<Record<string, unknown>> | null;
+  loading: boolean;
+  t: (k: string) => string;
+  onPage: (page: number) => void;
+}) {
+  const list = data?.records ?? [];
 
   // DS 2.x ExecutionStatus：0提交 1运行 2暂停 3 ready pause 4 prepare pause 5 fail 6 success 7 stop 8 stop 9等待线程 10等待依赖
   const stateText = (s: unknown): string => {
@@ -358,40 +376,43 @@ function InstancesView({ data, loading, t }: { data: unknown; loading: boolean; 
   };
   const fmtTime = (s: unknown): string => (s != null ? String(s).replace('T', ' ').replace(/\.\d+\+\d+$/, '') : '—');
   return (
-    <div className="flex-1 overflow-auto rounded-[calc(var(--radius)+4px)] border border-[var(--border)]">
-      {loading ? (
-        <div className="px-4 py-8 text-center text-xs text-[var(--muted-foreground)]">
-          <Loader2 size={13} className="mr-1.5 inline animate-spin" /> {t('loading')}
-        </div>
-      ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="mono border-b border-[var(--border)] text-left text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
-              <th className="px-4 py-3 font-normal">id</th>
-              <th className="px-4 py-3 font-normal">{t('colName')}</th>
-              <th className="px-4 py-3 font-normal">{t('colState')}</th>
-              <th className="px-4 py-3 font-normal">{t('colRunTime')}</th>
-              <th className="px-4 py-3 font-normal">{t('colExecutor')}</th>
-              <th className="px-4 py-3 font-normal">{t('colStartTime')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {list.map((ins, i) => (
-              <tr key={String(ins.id ?? i)} className="border-b border-[var(--border)]/60 last:border-0 hover:bg-[var(--surface-2)]/60">
-                <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{String(ins.id ?? '')}</td>
-                <td className="mono px-4 py-3 text-xs font-medium text-[var(--foreground)]">{String(ins.name ?? '')}</td>
-                <td className={`mono px-4 py-3 text-xs ${stateColor(ins.state)}`}>{stateText(ins.state)}</td>
-                <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{String(ins.runTimes ?? ins.duration ?? '')}</td>
-                <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{String(ins.executorName ?? '')}</td>
-                <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{fmtTime(ins.startTime)}</td>
+    <div className="flex flex-1 flex-col overflow-hidden rounded-[calc(var(--radius)+4px)] border border-[var(--border)]">
+      <div className="flex-1 overflow-auto">
+        {loading ? (
+          <div className="px-4 py-8 text-center text-xs text-[var(--muted-foreground)]">
+            <Loader2 size={13} className="mr-1.5 inline animate-spin" /> {t('loading')}
+          </div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="mono border-b border-[var(--border)] text-left text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
+                <th className="px-4 py-3 font-normal">id</th>
+                <th className="px-4 py-3 font-normal">{t('colName')}</th>
+                <th className="px-4 py-3 font-normal">{t('colState')}</th>
+                <th className="px-4 py-3 font-normal">{t('colRunTime')}</th>
+                <th className="px-4 py-3 font-normal">{t('colExecutor')}</th>
+                <th className="px-4 py-3 font-normal">{t('colStartTime')}</th>
               </tr>
-            ))}
-            {list.length === 0 && (
-              <tr><td colSpan={6} className="mono px-4 py-8 text-center text-xs text-[var(--muted-foreground)]">{t('noInstances')}</td></tr>
-            )}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {list.map((ins, i) => (
+                <tr key={String(ins.id ?? i)} className="border-b border-[var(--border)]/60 last:border-0 hover:bg-[var(--surface-2)]/60">
+                  <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{String(ins.id ?? '')}</td>
+                  <td className="mono px-4 py-3 text-xs font-medium text-[var(--foreground)]">{String(ins.name ?? '')}</td>
+                  <td className={`mono px-4 py-3 text-xs ${stateColor(ins.state)}`}>{stateText(ins.state)}</td>
+                  <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{String(ins.runTimes ?? ins.duration ?? '')}</td>
+                  <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{String(ins.executorName ?? '')}</td>
+                  <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{fmtTime(ins.startTime)}</td>
+                </tr>
+              ))}
+              {list.length === 0 && (
+                <tr><td colSpan={6} className="mono px-4 py-8 text-center text-xs text-[var(--muted-foreground)]">{t('noInstances')}</td></tr>
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
+      <Pagination page={data} onPage={onPage} className="border-t border-[var(--border)]" />
     </div>
   );
 }

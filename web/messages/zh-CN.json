@@ -177,6 +177,13 @@
     "noEnvs": "暂无环境",
     "projects": "项目",
     "noProjects": "暂无项目",
-    "readOnly": "只读视图 · 不触发 build / deploy / start / cancel"
+    "readOnly": "只读视图 · 不触发 build / deploy / start / cancel",
+    "apps": "Flink 应用",
+    "noApps": "暂无应用",
+    "appName": "作业名",
+    "appState": "状态",
+    "appMode": "执行模式",
+    "appFlink": "Flink",
+    "appStartTime": "启动时间"
   }
 }

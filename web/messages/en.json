@@ -177,6 +177,13 @@
     "noEnvs": "No environments",
     "projects": "Projects",
     "noProjects": "No projects",
-    "readOnly": "Read-only view \u00b7 no build / deploy / start / cancel"
+    "readOnly": "Read-only view \u00b7 no build / deploy / start / cancel",
+    "apps": "Flink Apps",
+    "noApps": "No apps",
+    "appName": "Job Name",
+    "appState": "State",
+    "appMode": "Exec Mode",
+    "appFlink": "Flink",
+    "appStartTime": "Start Time"
   }
 }

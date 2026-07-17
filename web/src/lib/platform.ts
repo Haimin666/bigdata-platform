@@ -107,6 +107,15 @@ export async function createPlatformProject(input: CreatePlatformProjectInput): 
   return post<ProjectItem>('/projects', input);
 }
 
+/** 平台统一分页结果（后端 PageResult 镜像）。所有列表端点都返回此形状。 */
+export interface PageResult<T> {
+  records: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPage: number;
+}
+
 /* ----------------------------- 数据血缘（P2，OpenMetadata） ----------------------------- */
 
 export interface LineageEntity {
@@ -196,12 +205,12 @@ export interface DsWorkflow {
   [k: string]: unknown;
 }
 
-export async function getDsProjects(): Promise<DsProject[]> {
-  return get<DsProject[]>('/scheduler/projects');
+export async function getDsProjects(): Promise<PageResult<DsProject>> {
+  return get<PageResult<DsProject>>('/scheduler/projects');
 }
 
-export async function getDsWorkflows(projectName: string): Promise<DsWorkflow[]> {
-  return get<DsWorkflow[]>(`/scheduler/projects/${encodeURIComponent(projectName)}/workflows`);
+export async function getDsWorkflows(projectName: string): Promise<PageResult<DsWorkflow>> {
+  return get<PageResult<DsWorkflow>>(`/scheduler/projects/${encodeURIComponent(projectName)}/workflows`);
 }
 
 export async function getDsWorkflow(projectName: string, processId: number): Promise<DsWorkflow> {
@@ -216,8 +225,8 @@ export async function triggerDsWorkflow(projectName: string, processId: number):
   return post(`/scheduler/projects/${encodeURIComponent(projectName)}/workflows/${processId}/trigger`);
 }
 
-export async function getDsInstances(projectName: string, pageNo = 1, pageSize = 20): Promise<unknown> {
-  return get<unknown>(`/scheduler/projects/${encodeURIComponent(projectName)}/instances?pageNo=${pageNo}&pageSize=${pageSize}`);
+export async function getDsInstances(projectName: string, pageNo = 1, pageSize = 20): Promise<PageResult<Record<string, unknown>>> {
+  return get<PageResult<Record<string, unknown>>>(`/scheduler/projects/${encodeURIComponent(projectName)}/instances?pageNo=${pageNo}&pageSize=${pageSize}`);
 }
 
 /* --------------------------- 实时开发（P5，StreamPark，只读） --------------------------- */
@@ -268,12 +277,30 @@ export interface SpEnv {
 export async function getSpDashboard(): Promise<SpDashboard> {
   return get<SpDashboard>('/streampark/dashboard');
 }
-export async function getSpProjects(): Promise<SpProject[]> {
-  return get<SpProject[]>('/streampark/projects');
+export async function getSpProjects(): Promise<PageResult<SpProject>> {
+  return get<PageResult<SpProject>>('/streampark/projects');
 }
-export async function getSpEnvs(): Promise<SpEnv[]> {
-  return get<SpEnv[]>('/streampark/envs');
+export async function getSpEnvs(): Promise<PageResult<SpEnv>> {
+  return get<PageResult<SpEnv>>('/streampark/envs');
 }
-export async function getSpClusters(): Promise<unknown> {
-  return get<unknown>('/streampark/clusters');
+export async function getSpClusters(): Promise<PageResult<Record<string, unknown>>> {
+  return get<PageResult<Record<string, unknown>>>('/streampark/clusters');
+}
+export interface SpApp {
+  id: string;
+  jobName?: string;
+  state?: number;
+  executionMode?: number;
+  flinkVersion?: string;
+  userId?: number;
+  totalTM?: number;
+  totalSlot?: number;
+  availableSlot?: number;
+  totalTask?: number;
+  startTime?: string;
+  duration?: number;
+  [k: string]: unknown;
+}
+export async function getSpApps(pageNum = 1, pageSize = 20): Promise<PageResult<SpApp>> {
+  return get<PageResult<SpApp>>(`/streampark/apps?pageNum=${pageNum}&pageSize=${pageSize}`);
 }

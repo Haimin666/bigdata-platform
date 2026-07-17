@@ -3,14 +3,18 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
-import { Loader2, Radio, Boxes, Cpu, MemoryStick, Activity, FolderGit2 } from 'lucide-react';
+import { Loader2, Radio, Boxes, Cpu, MemoryStick, Activity, FolderGit2, AppWindow } from 'lucide-react';
+import { Pagination } from '@/components/ui/pagination';
 import {
+  getSpApps,
   getSpDashboard,
   getSpEnvs,
   getSpProjects,
+  type SpApp,
   type SpDashboard,
   type SpEnv,
   type SpProject,
+  type PageResult,
 } from '@/lib/platform';
 
 function fmtMem(mb: number): string {
@@ -49,12 +53,27 @@ export function StreamParkOverview() {
   const [projects, setProjects] = useState<SpProject[]>([]);
   const [envs, setEnvs] = useState<SpEnv[]>([]);
   const [loading, setLoading] = useState(true);
+  const [apps, setApps] = useState<PageResult<SpApp> | null>(null);
+  const [appsLoading, setAppsLoading] = useState(false);
+
+  const fetchApps = async (page: number) => {
+    setAppsLoading(true);
+    try {
+      const res = await getSpApps(page, 20);
+      setApps(res);
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setAppsLoading(false);
+    }
+  };
 
   useEffect(() => {
     Promise.all([getSpDashboard(), getSpProjects(), getSpEnvs()])
-      .then(([d, p, e]) => { setDash(d); setProjects(p ?? []); setEnvs(e ?? []); })
+      .then(([d, p, e]) => { setDash(d); setProjects(p?.records ?? []); setEnvs(e?.records ?? []); fetchApps(1); })
       .catch((e) => toast.error((e as Error).message))
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
@@ -136,6 +155,57 @@ export function StreamParkOverview() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Flink 应用列表（分页，只读） */}
+      <div className="rounded-[calc(var(--radius)+4px)] border border-[var(--border)] bg-[var(--card)]/60">
+        <div className="flex items-center gap-2 border-b border-[var(--border)] px-4 py-2.5">
+          <AppWindow size={14} className="amber-text" />
+          <p className="mono-label">// {t('apps')}</p>
+          <span className="mono ml-auto text-[10px] text-[var(--muted-foreground)]">{apps?.total ?? 0}</span>
+        </div>
+        <div className="overflow-auto">
+          {appsLoading ? (
+            <div className="px-4 py-8 text-center text-xs text-[var(--muted-foreground)]">
+              <Loader2 size={13} className="mr-1.5 inline animate-spin" /> {t('loading')}
+            </div>
+          ) : (apps?.records ?? []).length === 0 ? (
+            <p className="mono px-4 py-6 text-center text-xs text-[var(--muted-foreground)]">{t('noApps')}</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="mono border-b border-[var(--border)] text-left text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
+                  <th className="px-4 py-3 font-normal">{t('appName')}</th>
+                  <th className="px-4 py-3 font-normal">{t('appState')}</th>
+                  <th className="px-4 py-3 font-normal">{t('appMode')}</th>
+                  <th className="px-4 py-3 font-normal">{t('appFlink')}</th>
+                  <th className="px-4 py-3 font-normal">TM</th>
+                  <th className="px-4 py-3 font-normal">Slot</th>
+                  <th className="px-4 py-3 font-normal">{t('appStartTime')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(apps?.records ?? []).map((a) => {
+                  const st = Number(a.state);
+                  const stText = ({ 0: '新增', 1: '已启动', 3: '已发布', 4: '运行中', 5: '失败', 7: '已停止', 9: '映射中' } as Record<number, string>)[st] ?? String(a.state ?? '');
+                  const stColor = st === 4 ? 'text-emerald-400' : st === 5 ? 'text-red-400' : 'text-[var(--muted-foreground)]';
+                  return (
+                    <tr key={a.id} className="border-b border-[var(--border)]/60 last:border-0 hover:bg-[var(--surface-2)]/60">
+                      <td className="mono px-4 py-3 text-xs font-medium text-[var(--foreground)]">{a.jobName ?? a.id}</td>
+                      <td className={`mono px-4 py-3 text-xs ${stColor}`}>{stText}</td>
+                      <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{a.executionMode ?? '—'}</td>
+                      <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{a.flinkVersion ?? '—'}</td>
+                      <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{a.totalTM ?? '—'}</td>
+                      <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{a.availableSlot ?? 0}/{a.totalSlot ?? 0}</td>
+                      <td className="mono px-4 py-3 text-xs text-[var(--muted-foreground)]">{a.startTime ? String(a.startTime).replace('T', ' ').slice(0, 19) : '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
+        <Pagination page={apps} onPage={fetchApps} className="border-t border-[var(--border)]" />
       </div>
 
       <p className="mono text-center text-[10px] text-[var(--muted-foreground)]/60">{t('readOnly')}</p>
