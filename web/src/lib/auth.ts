@@ -2,14 +2,12 @@
 
 import JSEncrypt from 'jsencrypt';
 import { api } from './api';
-import { API_PATHS } from './apiPaths';
 import { enableDemoMode, disableDemoMode } from './mock';
 import { platformMode, platformLogin, clearToken } from './platform';
 import type {
   BaseInfo,
   LoginResult,
   PublicKeyData,
-  WorkspaceHomePage,
 } from './types';
 
 const BASE_INFO_KEY = 'baseInfo';
@@ -92,13 +90,6 @@ export async function fetchIsAdmin(): Promise<boolean> {
   } catch {
     return false;
   }
-}
-
-export async function getWorkspaceHomePage(): Promise<WorkspaceHomePage> {
-  return api.fetch<WorkspaceHomePage>(`${API_PATHS.WORKSPACE}getWorkspaceHomePage`, {
-    method: 'get',
-    params: { micro_module: 'dss' },
-  });
 }
 
 export async function logout(): Promise<void> {

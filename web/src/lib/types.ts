@@ -12,43 +12,6 @@ export interface LoginResult {
   redirectLinkisUrl?: string;
 }
 
-export interface WorkspaceHomePage {
-  homePageUrl: string;
-}
-
-export interface WorkspaceItem {
-  id: number;
-  name: string;
-  description?: string;
-  isDefaultWorkspace?: boolean;
-}
-
-export interface ProjectItem {
-  id: number;
-  name: string;
-  description?: string;
-  applicationArea?: string;
-  product?: string;
-  createBy?: string;
-  createTime?: string;
-  visibility?: string;
-  orchestratorCount?: number;
-  business?: string;
-}
-
-export type OrchestratorStatus = 'published' | 'developing' | 'disabled';
-
-export interface OrchestratorItem {
-  orchestratorId: number;
-  orchestratorName: string;
-  orchestratorVersionId?: number;
-  description?: string;
-  createBy?: string;
-  createTime?: string;
-  status?: OrchestratorStatus;
-  type?: string;
-}
-
 export type ScriptType = 'spark.sql' | 'hive.sql' | 'python' | 'shell' | 'scala';
 
 export interface ScriptItem {
@@ -97,13 +60,4 @@ export interface DataAssetItem {
   sizeMb?: number;
   owner?: string;
   updateTime?: string;
-}
-
-export interface AppConnItem {
-  key: string;
-  name: string;
-  description: string;
-  category: 'develop' | 'schedule' | 'quality' | 'exchange' | 'stream' | 'ml' | 'visual';
-  status: 'online' | 'offline' | 'soon';
-  icon?: string;
 }

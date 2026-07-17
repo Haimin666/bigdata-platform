@@ -3,43 +3,41 @@ import { mockFetch } from './mock';
 import { API_PATHS } from './apiPaths';
 
 describe('mockFetch', () => {
-  it('returns 8 mock projects', async () => {
-    const res = await mockFetch<{ projects: unknown[] }>(
-      `${API_PATHS.PROJECT}getAllProjects`,
+  it('returns script tree for scriptis', async () => {
+    const res = await mockFetch<{ files: unknown[] }>(
+      `${API_PATHS.FILESYSTEM}getDirFileTrees`,
     );
-    expect(res.projects).toHaveLength(8);
+    expect(res.files.length).toBeGreaterThan(0);
   });
 
-  it('returns orchestrators scoped by projectId', async () => {
-    // etl_pipeline (id 102) 声明 orchestratorCount=5
-    const res = await mockFetch<{ page: unknown[]; total: number }>(
-      `${API_PATHS.ORCHESTRATOR}getAllOrchestrator`,
-      { projectId: 102 },
+  it('opens a script by name', async () => {
+    const res = await mockFetch<{ script: { name: string } }>(
+      `${API_PATHS.FILESYSTEM}openFile`,
+      { fileName: 'user_stats.sql' },
     );
-    expect(res.page).toHaveLength(5);
-    expect(res.total).toBe(5);
+    expect(res.script.name).toBe('user_stats.sql');
   });
 
-  it('accepts projectId as string', async () => {
-    const res = await mockFetch<{ page: unknown[] }>(
-      `${API_PATHS.ORCHESTRATOR}getAllOrchestrator`,
-      { projectId: '104' },
+  it('returns run result for sql execute', async () => {
+    const res = await mockFetch<{ taskId: string; rows: unknown[][] }>(
+      `${API_PATHS.ENTRANCE}execute`,
+      { runType: 'sql' },
     );
-    // risk_report (id 104) 声明 orchestratorCount=6
-    expect(res.page).toHaveLength(6);
+    expect(res.taskId).toContain('task_sql_');
+    expect(res.rows.length).toBeGreaterThan(0);
   });
 
-  it('falls back to default when projectId missing', async () => {
-    const res = await mockFetch<{ page: unknown[] }>(
-      `${API_PATHS.ORCHESTRATOR}getAllOrchestrator`,
+  it('returns mock data sources', async () => {
+    const res = await mockFetch<{ list: unknown[] }>(
+      `${API_PATHS.DATASOURCE}listDataSources`,
     );
-    expect(res.page.length).toBeGreaterThan(0);
+    expect(res.list.length).toBeGreaterThan(0);
   });
 
-  it('returns application areas', async () => {
-    const res = await mockFetch<{ applicationAreas: string[] }>(
-      `${API_PATHS.PROJECT}listApplicationAreas`,
+  it('returns mock data assets', async () => {
+    const res = await mockFetch<{ assets: unknown[] }>(
+      `${API_PATHS.DATA_GOVERNANCE}listAssets`,
     );
-    expect(res.applicationAreas).toContain('基础科技');
+    expect(res.assets.length).toBeGreaterThan(0);
   });
 });

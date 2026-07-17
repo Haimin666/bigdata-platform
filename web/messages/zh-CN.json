@@ -18,45 +18,8 @@
     "description": "描述",
     "loading": "加载中..."
   },
-  "workspace": {
-    "title": "工作空间",
-    "switch": "切换工作空间",
-    "homeTitle": "工作空间首页",
-    "homeDesc": "统一的数据应用开发与管理入口",
-    "projects": "工程",
-    "appProcess": "应用流程",
-    "knowledge": "知识库",
-    "noWorkspace": "暂无工作空间"
-  },
-  "project": {
-    "create": "新建工程",
-    "list": "工程列表",
-    "createTitle": "创建工程",
-    "namePlaceholder": "请输入工程名称",
-    "descPlaceholder": "请输入工程描述",
-    "businessLabel": "所属业务",
-    "productLabel": "所属产品",
-    "empty": "暂无工程，点击「新建工程」开始",
-    "open": "进入工程",
-    "back": "返回工程列表"
-  },
-  "orchestrator": {
-    "title": "编排",
-    "name": "编排名称",
-    "version": "版本",
-    "status": "状态",
-    "owner": "负责人",
-    "createTime": "创建时间",
-    "empty": "暂无编排",
-    "open": "进入",
-    "canvasTodo": "编排画布将在 M3 里程碑提供"
-  },
   "nav": {
-    "home": "工作空间",
-    "projects": "工程",
     "scriptis": "Scriptis",
-    "workflow": "工作流",
-    "apps": "应用中心",
     "datasource": "数据源",
     "governance": "数据治理",
     "lineage": "数据血缘",
@@ -80,22 +43,6 @@
     "noData": "无数据返回",
     "untitled": "未命名脚本",
     "selectPrompt": "从左侧选择或新建一个脚本"
-  },
-  "workflow": {
-    "title": "工作流编排",
-    "subtitle": "拖拽节点构建数据加工 DAG",
-    "save": "保存",
-    "clear": "清空",
-    "saved": "已保存（演示）· {nodes} 节点 / {edges} 连线",
-    "cleared": "画布已清空"
-  },
-  "apps": {
-    "title": "应用中心",
-    "subtitle": "DSS 集成的子应用（AppConn）",
-    "enter": "进入",
-    "back": "返回应用中心",
-    "recent": "近期动态",
-    "mockNote": "此页面为演示数据，实际需对接各 AppConn 子应用。"
   },
   "datasource": {
     "title": "数据源管理",

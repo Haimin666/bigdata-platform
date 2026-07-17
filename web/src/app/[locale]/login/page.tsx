@@ -7,21 +7,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { login, fetchIsAdmin, getWorkspaceHomePage, setLocale, getBaseInfo, demoLogin } from '@/lib/auth';
+import { login, fetchIsAdmin, setLocale, getBaseInfo, demoLogin } from '@/lib/auth';
+import { platformMode } from '@/lib/platform';
 import { ThemeToggle } from '@/components/shell/ThemeToggle';
 import { Loader2, Sparkles, ArrowRight, Terminal } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BOOT_LINES = [
   '> initializing linkis compute middleware ......... ok',
-  '> mounting workspace registry ..................... ok',
-  '> loading orchestrator plugins (8) ............... ok',
-  '> establishing data governance channel ........... ok',
-  '> dss console ready ▮',
+  '> loading lineage / scheduler / realtime plugins .. ok',
+  '> establishing data governance channel ............. ok',
+  '> platform console ready ▮',
 ];
 
 const TICKER = [
-  'WORKSPACES 03', 'PROJECTS 1,284', 'WORKFLOWS 7,912', 'JOBS/24H 42.6K',
+  'LINEAGE NODES 1.2K', 'WORKFLOWS 142', 'RUNNING JOBS 38', 'TASKS/24H 208',
   'ENGINES SPARK·FLINK·SQOOP·PYTHON', 'UPTIME 99.98%', 'TENANTS 36',
 ];
 
@@ -36,7 +36,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     setLocale(locale);
-    if (getBaseInfo()) router.replace('/workspaceHome');
+    if (getBaseInfo()) router.replace('/lineage');
   }, [locale, router]);
 
   const submit = async (e: React.FormEvent) => {
@@ -49,12 +49,17 @@ export default function LoginPage() {
         window.location.href = rst.redirectLinkisUrl;
         return;
       }
+      // 平台模式：登录已含 isAdmin，直接进入平台首页，不再调 Linkis workspace 接口
+      if (platformMode()) {
+        toast.success(t('loginSuccess'));
+        router.replace('/lineage');
+        return;
+      }
       const isAdmin = await fetchIsAdmin();
       const base = getBaseInfo();
       if (base) base.isAdmin = isAdmin;
-      const home = await getWorkspaceHomePage();
       toast.success(t('loginSuccess'));
-      router.replace(home?.homePageUrl || '/workspaceHome');
+      router.replace('/lineage');
     } catch (err) {
       toast.error((err as Error).message || t('loginFailed'));
     } finally {
@@ -66,7 +71,7 @@ export default function LoginPage() {
     setDemoLoading(true);
     try {
       await demoLogin();
-      router.replace('/workspaceHome');
+      router.replace('/lineage');
     } finally {
       setDemoLoading(false);
     }
@@ -97,7 +102,7 @@ export default function LoginPage() {
             <span className="grid h-10 w-10 place-items-center rounded-[var(--radius)] bg-[var(--primary)] text-[var(--primary-foreground)]">
               <Terminal size={20} />
             </span>
-            <span className="mono-label">DataSphere Studio · Console</span>
+            <span className="mono-label">Bigdata Platform · Console</span>
           </div>
 
           <h1 className="mt-12 max-w-md text-5xl font-bold leading-[1.05] tracking-tight">
@@ -147,13 +152,13 @@ export default function LoginPage() {
             <span className="grid h-10 w-10 place-items-center rounded-[var(--radius)] bg-[var(--primary)] text-[var(--primary-foreground)]">
               <Terminal size={20} />
             </span>
-            <span className="mono-label">DataSphere Studio</span>
+            <span className="mono-label">Bigdata Platform</span>
           </div>
 
           <p className="mono-label mb-3">// authenticate</p>
           <h2 className="text-3xl font-bold tracking-tight">登录控制台</h2>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            输入凭据进入工作空间，或使用演示模式浏览界面。
+            输入凭据进入平台，或使用演示模式浏览界面。
           </p>
 
           <form onSubmit={submit} className="mt-8 space-y-5">

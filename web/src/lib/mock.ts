@@ -1,58 +1,12 @@
 import { API_PATHS } from './apiPaths';
 import type {
-  AppConnItem,
   DataAssetItem,
   DataSourceItem,
-  OrchestratorItem,
-  ProjectItem,
   RunResult,
   ScriptItem,
-  WorkspaceItem,
 } from './types';
 
 const MOCK_LATENCY = 200;
-
-const mockWorkspaces: WorkspaceItem[] = [
-  { id: 1, name: '演示工作空间', description: 'DSS 演示工作空间（假数据）', isDefaultWorkspace: true },
-  { id: 2, name: '数据开发空间', description: '日常数据开发与加工', isDefaultWorkspace: false },
-  { id: 3, name: '算法实验空间', description: '机器学习与算法实验', isDefaultWorkspace: false },
-];
-
-const mockProjects: ProjectItem[] = [
-  { id: 101, name: 'demo_project', description: '示例工程：含若干脚本与工作流，用于快速了解 DSS 编排能力', applicationArea: '基础科技', product: 'DSS', createBy: 'hadoop', createTime: '2025-03-12 10:24', visibility: '公开', orchestratorCount: 3, business: '示例' },
-  { id: 102, name: 'etl_pipeline', description: 'ETL 数据加工流水线：采集→清洗→落库全链路编排', applicationArea: '基础科技', product: 'DSS', createBy: 'hadoop', createTime: '2025-03-18 09:11', visibility: '公开', orchestratorCount: 5, business: '数据平台' },
-  { id: 103, name: 'ml_experiment', description: '机器学习实验工程：特征工程、训练、评估编排', applicationArea: '算法', product: 'DSS', createBy: 'alice', createTime: '2025-04-02 14:50', visibility: '团队', orchestratorCount: 4, business: '算法' },
-  { id: 104, name: 'risk_report', description: '风控报表与指标工程：T+1 指标计算与报表生成', applicationArea: '风控', product: 'DSS', createBy: 'bob', createTime: '2025-04-15 16:32', visibility: '公开', orchestratorCount: 6, business: '风控' },
-  { id: 105, name: 'realtime_dashboard', description: '实时大盘：流式指标计算与可视化推送', applicationArea: '基础科技', product: 'DSS', createBy: 'hadoop', createTime: '2025-05-08 11:05', visibility: '团队', orchestratorCount: 2, business: '数据平台' },
-  { id: 106, name: 'user_labels', description: '用户标签体系：标签加工与人群圈选编排', applicationArea: '算法', product: 'DSS', createBy: 'alice', createTime: '2025-05-21 18:44', visibility: '公开', orchestratorCount: 3, business: '增长' },
-  { id: 107, name: 'data_quality', description: '数据质量监控：规则校验与告警上报', applicationArea: '风控', product: 'DSS', createBy: 'bob', createTime: '2025-06-03 09:30', visibility: '公开', orchestratorCount: 4, business: '治理' },
-  { id: 108, name: 'ad_hoc', description: '临时分析工程：即席查询与导出', applicationArea: '基础科技', product: 'DSS', createBy: 'hadoop', createTime: '2025-06-19 13:20', visibility: '公开', orchestratorCount: 1, business: '分析' },
-];
-
-// 编排（工作流）假数据：按 projectId 索引；缺失时回退到默认集合
-const orchestratorTemplates: Array<Omit<OrchestratorItem, 'orchestratorId' | 'orchestratorName'>> = [
-  { description: '主数据加工编排', status: 'published', type: 'workflow', createBy: 'hadoop', createTime: '2025-03-12 11:00', orchestratorVersionId: 3 },
-  { description: '调度补数编排', status: 'developing', type: 'workflow', createBy: 'hadoop', createTime: '2025-04-01 10:10', orchestratorVersionId: 1 },
-  { description: '指标汇总编排', status: 'published', type: 'workflow', createBy: 'alice', createTime: '2025-04-20 15:22', orchestratorVersionId: 2 },
-  { description: '质量校验编排', status: 'disabled', type: 'workflow', createBy: 'bob', createTime: '2025-05-12 09:45', orchestratorVersionId: 1 },
-  { description: '实验训练编排', status: 'developing', type: 'workflow', createBy: 'alice', createTime: '2025-06-01 17:30', orchestratorVersionId: 1 },
-  { description: '报表生成编排', status: 'published', type: 'workflow', createBy: 'bob', createTime: '2025-06-10 14:00', orchestratorVersionId: 4 },
-];
-
-const orchestratorByProject: Record<number, OrchestratorItem[]> = {};
-for (const p of mockProjects) {
-  const count = p.orchestratorCount ?? 2;
-  const items: OrchestratorItem[] = [];
-  for (let i = 0; i < count; i++) {
-    const tpl = orchestratorTemplates[i % orchestratorTemplates.length];
-    items.push({
-      ...tpl,
-      orchestratorId: p.id * 100 + i + 1,
-      orchestratorName: `${p.name}_flow_${String(i + 1).padStart(2, '0')}`,
-    });
-  }
-  orchestratorByProject[p.id] = items;
-}
 
 // 脚本（Scriptis）假数据
 const mockScripts: ScriptItem[] = [
@@ -127,20 +81,7 @@ const mockDataAssets: DataAssetItem[] = [
   { id: 5, name: 'dss_demo', type: 'database', database: 'dss_demo', comment: '演示库', owner: 'hadoop', updateTime: '2025-03-12' },
 ];
 
-// AppConn 子应用清单（前端静态，非后端接口）
-export const mockAppConns: AppConnItem[] = [
-  { key: 'scriptis', name: 'Scriptis', description: 'SQL/脚本在线开发 IDE，支持 Spark/Hive/Python/Shell', category: 'develop', status: 'online' },
-  { key: 'visualis', name: 'Visualis', description: '数据可视化与仪表盘，图表与展示组件', category: 'visual', status: 'online' },
-  { key: 'schedulis', name: 'Schedulis', description: '基于 Azkaban 的工作流调度系统', category: 'schedule', status: 'online' },
-  { key: 'qualitis', name: 'Qualitis', description: '数据质量管理，规则校验与监控告警', category: 'quality', status: 'online' },
-  { key: 'exchangis', name: 'Exchangis', description: '数据交换平台，异构数据源同步', category: 'exchange', status: 'offline' },
-  { key: 'streamis', name: 'Streamis', description: '流式应用开发与监控管理', category: 'stream', status: 'soon' },
-  { key: 'prophecis', name: 'Prophecis', description: '机器学习实验与模型管理', category: 'ml', status: 'soon' },
-  { key: 'dolphinscheduler', name: 'DolphinScheduler', description: '分布式可视化 DAG 调度任务', category: 'schedule', status: 'offline' },
-  { key: 'airflow', name: 'Airflow', description: 'Airflow 调度集成', category: 'schedule', status: 'soon' },
-];
-
-export const DEMO_FLAG = 'dss_demo';
+export const DEMO_FLAG = 'platform_demo';
 
 export function isDemoMode(): boolean {
   if (typeof window === 'undefined') return false;
@@ -157,32 +98,11 @@ export function disableDemoMode(): void {
   localStorage.removeItem(DEMO_FLAG);
 }
 
-function projectIdFromPayload(payload: unknown): number | undefined {
-  if (payload && typeof payload === 'object') {
-    const v = (payload as Record<string, unknown>).projectId;
-    if (typeof v === 'number') return v;
-    if (typeof v === 'string' && v.trim() !== '') return Number(v);
-  }
-  return undefined;
-}
-
 export function mockFetch<T = unknown>(url: string, payload?: unknown): Promise<T> {
   let data: unknown = {};
   if (url === '/user/publicKey') data = { enableLoginEncrypt: false, publicKey: '' };
   else if (url === '/user/login') data = {};
   else if (url === '/jobhistory/governanceStationAdmin') data = { admin: false };
-  else if (url === `${API_PATHS.WORKSPACE}getWorkspaceHomePage`)
-    data = { workspaceHomePage: { homePageUrl: '/workspaceHome' } };
-  else if (url === `${API_PATHS.WORKSPACE}workspaces`) data = { workspaces: mockWorkspaces };
-  else if (url === `${API_PATHS.PROJECT}getAllProjects`) data = { projects: mockProjects };
-  else if (url === `${API_PATHS.PROJECT}createProject`) data = { id: 200 };
-  else if (url === `${API_PATHS.PROJECT}listApplicationAreas`)
-    data = { applicationAreas: ['基础科技', '算法', '风控', '治理', '增长'] };
-  else if (url === `${API_PATHS.ORCHESTRATOR}getAllOrchestrator`) {
-    const pid = projectIdFromPayload(payload);
-    const list = orchestratorByProject[pid ?? 101] ?? [];
-    data = { page: list, total: list.length };
-  }
   // Scriptis：脚本列表/打开/保存
   else if (url === `${API_PATHS.FILESYSTEM}getDirFileTrees`) data = { files: mockScripts };
   else if (url === `${API_PATHS.FILESYSTEM}openFile`) {

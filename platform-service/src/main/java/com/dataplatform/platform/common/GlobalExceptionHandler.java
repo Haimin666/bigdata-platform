@@ -8,6 +8,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +32,12 @@ public class GlobalExceptionHandler {
     String msg = e.getBindingResult().getAllErrors().stream()
         .findFirst().map(err -> err.getDefaultMessage()).orElse("参数校验失败");
     return ResponseEntity.ok(ApiResponse.fail(1, msg));
+  }
+
+  @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+  public ResponseEntity<ApiResponse<Void>> handleNoHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(ApiResponse.fail(404, "接口不存在"));
   }
 
   @ExceptionHandler(Exception.class)

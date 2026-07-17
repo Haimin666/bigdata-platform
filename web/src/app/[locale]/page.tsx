@@ -6,5 +6,5 @@ export default async function LocaleIndex({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect({ href: '/workspaceHome', locale });
+  redirect({ href: '/lineage', locale });
 }

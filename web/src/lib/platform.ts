@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
-import type { BaseInfo, ProjectItem, WorkspaceItem } from './types';
+import type { BaseInfo } from './types';
 
 const PLATFORM_API = process.env.NEXT_PUBLIC_PLATFORM_API || '';
 const TOKEN_KEY = 'platform_token';
@@ -85,26 +85,6 @@ export async function platformLogin(username: string, password: string): Promise
 
 export async function getPlatformMe(): Promise<BaseInfo> {
   return get<BaseInfo>('/auth/me');
-}
-
-export async function getPlatformWorkspaces(): Promise<WorkspaceItem[]> {
-  return get<WorkspaceItem[]>('/workspaces');
-}
-
-export async function getPlatformProjects(workspaceId: number): Promise<ProjectItem[]> {
-  return get<ProjectItem[]>(`/projects?workspaceId=${workspaceId}`);
-}
-
-export interface CreatePlatformProjectInput {
-  name: string;
-  description?: string;
-  business?: string;
-  applicationArea?: string;
-  workspaceId: number;
-}
-
-export async function createPlatformProject(input: CreatePlatformProjectInput): Promise<ProjectItem> {
-  return post<ProjectItem>('/projects', input);
 }
 
 /** 平台统一分页结果（后端 PageResult 镜像）。所有列表端点都返回此形状。 */

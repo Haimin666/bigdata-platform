@@ -18,45 +18,8 @@
     "description": "Description",
     "loading": "Loading..."
   },
-  "workspace": {
-    "title": "Workspace",
-    "switch": "Switch workspace",
-    "homeTitle": "Workspace Home",
-    "homeDesc": "Unified data application development & management portal",
-    "projects": "Projects",
-    "appProcess": "App Process",
-    "knowledge": "Knowledge",
-    "noWorkspace": "No workspace"
-  },
-  "project": {
-    "create": "New Project",
-    "list": "Projects",
-    "createTitle": "Create Project",
-    "namePlaceholder": "Enter project name",
-    "descPlaceholder": "Enter project description",
-    "businessLabel": "Business",
-    "productLabel": "Product",
-    "empty": "No projects yet. Click \"New Project\" to start.",
-    "open": "Open",
-    "back": "Back to projects"
-  },
-  "orchestrator": {
-    "title": "Orchestrators",
-    "name": "Name",
-    "version": "Version",
-    "status": "Status",
-    "owner": "Owner",
-    "createTime": "Created",
-    "empty": "No orchestrators",
-    "open": "Open",
-    "canvasTodo": "Workflow canvas arrives in milestone M3"
-  },
   "nav": {
-    "home": "Workspace",
-    "projects": "Projects",
     "scriptis": "Scriptis",
-    "workflow": "Workflow",
-    "apps": "Apps",
     "datasource": "Data Sources",
     "governance": "Governance",
     "lineage": "Lineage",
@@ -80,22 +43,6 @@
     "noData": "No data returned",
     "untitled": "untitled",
     "selectPrompt": "Select or create a script from the left"
-  },
-  "workflow": {
-    "title": "Workflow Canvas",
-    "subtitle": "Drag nodes to build a data pipeline DAG",
-    "save": "Save",
-    "clear": "Clear",
-    "saved": "Saved (demo) \u00b7 {nodes} nodes / {edges} edges",
-    "cleared": "Canvas cleared"
-  },
-  "apps": {
-    "title": "Application Hub",
-    "subtitle": "Integrated sub-apps (AppConn) of DSS",
-    "enter": "Open",
-    "back": "Back to apps",
-    "recent": "Recent activity",
-    "mockNote": "Demo data only \u2014 connect each AppConn sub-app for real data."
   },
   "datasource": {
     "title": "Data Sources",

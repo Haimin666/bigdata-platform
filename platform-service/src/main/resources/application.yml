@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: platform-service
+  mvc:
+    throw-exception-if-no-handler-found: true
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${DB_USER:root}
