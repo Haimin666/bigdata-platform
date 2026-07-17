@@ -58,7 +58,8 @@
     "workflow": "Workflow",
     "apps": "Apps",
     "datasource": "Data Sources",
-    "governance": "Governance"
+    "governance": "Governance",
+    "lineage": "Lineage"
   },
   "scriptis": {
     "title": "Scriptis IDE",
@@ -70,7 +71,7 @@
     "saveFailed": "Save failed",
     "runSuccess": "Execution finished",
     "runFailed": "Execution failed",
-    "running": "Running, submitted to Linkis…",
+    "running": "Running, submitted to Linkis\u2026",
     "result": "Result",
     "log": "Log",
     "noResult": "Click Run to see results",
@@ -83,7 +84,7 @@
     "subtitle": "Drag nodes to build a data pipeline DAG",
     "save": "Save",
     "clear": "Clear",
-    "saved": "Saved (demo) · {nodes} nodes / {edges} edges",
+    "saved": "Saved (demo) \u00b7 {nodes} nodes / {edges} edges",
     "cleared": "Canvas cleared"
   },
   "apps": {
@@ -92,7 +93,7 @@
     "enter": "Open",
     "back": "Back to apps",
     "recent": "Recent activity",
-    "mockNote": "Demo data only — connect each AppConn sub-app for real data."
+    "mockNote": "Demo data only \u2014 connect each AppConn sub-app for real data."
   },
   "datasource": {
     "title": "Data Sources",
@@ -116,5 +117,13 @@
     "rows": "Rows",
     "size": "Size",
     "owner": "Owner"
+  },
+  "lineage": {
+    "title": "Data Lineage",
+    "subtitle": "Powered by OpenMetadata. Search an entity and explore its upstream/downstream lineage; click a node to drill in.",
+    "searchPlaceholder": "Search table / dashboard / pipeline FQN\u2026",
+    "empty": "Search an entity to view its lineage graph",
+    "loading": "Loading lineage\u2026",
+    "loaded": "Loaded lineage for {fqn}"
   }
 }

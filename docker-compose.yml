@@ -32,6 +32,8 @@ services:
       LINKIS_MOCK: ${LINKIS_MOCK:-true}
       LINKIS_BASE_URL: ${LINKIS_BASE_URL:-http://linkis:9001}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      OPENMETADATA_BASE_URL: ${OPENMETADATA_BASE_URL:-}
+      OPENMETADATA_TOKEN: ${OPENMETADATA_TOKEN:-}
     ports:
       - "8088:8088"
     restart: unless-stopped

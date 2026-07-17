@@ -106,3 +106,50 @@ export interface CreatePlatformProjectInput {
 export async function createPlatformProject(input: CreatePlatformProjectInput): Promise<ProjectItem> {
   return post<ProjectItem>('/projects', input);
 }
+
+/* ----------------------------- 数据血缘（P2，OpenMetadata） ----------------------------- */
+
+export interface LineageEntity {
+  fqn: string;
+  name: string;
+  entityType: string;
+  displayName: string;
+}
+
+export interface LineageNode {
+  id: string;
+  label: string;
+  entityType: string;
+  fqn: string;
+  deleted: boolean;
+}
+
+export interface LineageEdge {
+  source: string;
+  target: string;
+}
+
+export interface LineageGraph {
+  nodes: LineageNode[];
+  edges: LineageEdge[];
+  entityType: string;
+  fqn: string;
+}
+
+export async function getLineageHealth(): Promise<{ connected: boolean; version: string; baseUrl: string }> {
+  return get<{ connected: boolean; version: string; baseUrl: string }>('/lineage/health');
+}
+
+export async function searchLineage(q: string, size = 20): Promise<LineageEntity[]> {
+  return get<LineageEntity[]>(`/lineage/search?q=${encodeURIComponent(q)}&size=${size}`);
+}
+
+export async function getLineage(
+  entityType: string,
+  fqn: string,
+  upstreamDepth = 1,
+  downstreamDepth = 1,
+): Promise<LineageGraph> {
+  const params = new URLSearchParams({ upstreamDepth: String(upstreamDepth), downstreamDepth: String(downstreamDepth) });
+  return get<LineageGraph>(`/lineage/${encodeURIComponent(entityType)}/name/${encodeURIComponent(fqn)}?${params}`);
+}

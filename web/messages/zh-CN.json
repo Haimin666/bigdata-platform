@@ -58,7 +58,8 @@
     "workflow": "工作流",
     "apps": "应用中心",
     "datasource": "数据源",
-    "governance": "数据治理"
+    "governance": "数据治理",
+    "lineage": "数据血缘"
   },
   "scriptis": {
     "title": "Scriptis IDE",
@@ -116,5 +117,13 @@
     "rows": "行数",
     "size": "大小",
     "owner": "负责人"
+  },
+  "lineage": {
+    "title": "数据血缘",
+    "subtitle": "基于 OpenMetadata，搜索实体并查看上下游血缘图谱，点击节点可下钻",
+    "searchPlaceholder": "搜索表 / 仪表盘 / 管道 FQN…",
+    "empty": "搜索一个实体以查看其血缘图谱",
+    "loading": "加载血缘中…",
+    "loaded": "已加载 {fqn} 的血缘"
   }
 }
